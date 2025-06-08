@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Menu</title>
+    <link rel="stylesheet" href="css/menu.css">
+  </head>
+  <body>
+    <nav>
+        <select id="category">
+            <%- categories.map((category) => `<option value="${category.category}">${category.category}</option>`).join('') -%>
+        </select>
+    </nav>
+    <div class="main">
+        <ul class="cards">
+            <%- items.map((item) => `<li class="cards_item">
+                <div class="card">
+                    <div class="card_image">
+                    <img src="${item.image_url}" alt="Image of ${item.name}">
+                    <span class="card_price"><span>$</span>${item.price_per_item}</span>
+                    </div>
+                    <div class="card_content">
+                    <h2 class="card_title">${item.name}</h2>
+                    <div class="card_text">
+                        <p>
+                            Availablity: ${item.availablity}
+                        </p>
+                        <hr />
+                        <p>
+                            ${item.description}
+                        </p>
+                    </div>
+                    <div>
+                        <button id="${item.name}" value="${item.item_id}">Add to list</button>
+                    </div>
+                </div>
+            </li>`).join('') -%>
+        </ul>
+    </div>
+    <script>
+        let categorySelect = document.getElementById("category");
+        let itemList= [];
+        categorySelect.addEventListener("change", async (event) =>{
+            let category = event.target.value;
+            console.log("Selected category:", category);
+            await fetch(`/menu/${category}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Received data:", data.items);
+                    let itemsContainer = document.getElementsByClassName("cards")[0];
+                    
+                    itemsContainer.innerHTML = data.items.map(item => `<li class="cards_item">
+                    <div class="card">
+                    <div class="card_image">
+                    <img src="${item.image_url}" alt="Image of ${item.name}">
+                    <span class="card_price"><span>$</span>${item.price_per_item}</span>
+                    </div>
+                    <div class="card_content">
+                    <h2 class="card_title">${item.name}</h2>
+                    <div class="card_text">
+                        <p>
+                            Availablity: ${item.availablity}
+                        </p>
+                        <hr />
+                        <p>
+                            ${item.description}
+                        </p>
+                    </div>
+                    </div>
+                    <div>
+                        <button id="${item.name}" value="${item.item_id}">Add to list</button>
+                    </div>
+                </div>
+            </li>`).join('');
+            createList(data.items);
+            });
+        });
+        
+        var itemsArray=JSON.parse(`<%- JSON.stringify(items) %>`);
+        function createList(items){
+            items.forEach(item => {
+                console.log(item)
+                let button = document.getElementById(item.name);
+                console.log(button)
+                console.log(button.value);
+                if(itemList.includes(button.value)){
+                    button.innerHTML="Remove from list";
+                }
+                else{
+                    button.innerHTML="Add to list";
+                }
+                button.addEventListener("click", () => {
+                    let itemId = button.value;
+                    console.log(itemId);
+                    if (itemList.includes(itemId)) {
+                        button.innerHTML="Add to list";
+                        itemList= itemList.filter((element) => element !== itemId);
+                    }
+                    else {
+                        button.innerHTML="Remove from list";
+                        itemList.push(itemId);
+                    }
+                    console.log(itemList);    
+                })
+            }) 
+        }
+        createList(itemsArray);
+    </script>
+  </body>
+</html>
