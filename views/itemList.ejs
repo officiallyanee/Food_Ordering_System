@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/itemList.css">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+    <%- itemPriceList.map((item) => `
+        <div id="item-wrapper">
+            <div>${item.name}(${item.qty})</div>
+            <div>${item.price}</div>
+        </div>
+    `).join('') -%>
+    <hr/>
+    <div>Total : <%= total %></div>
+    </div>
+</body>
+</html>

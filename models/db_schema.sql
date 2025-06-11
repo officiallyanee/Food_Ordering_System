@@ -1,13 +1,14 @@
 CREATE TABLE `login_details`(
-    `user_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `user_id` VARCHAR(255) NOT NULL PRIMARY KEY, 
     `name` CHAR(255) NOT NULL,
     `email` VARCHAR(255) NOT NULL,
     `pwd_hash` VARCHAR(255) NOT NULL,
-    `role` ENUM('customer','chef','admin') NOT NULL
+    `role` ENUM('customer','chef','admin') NOT ,
+     UNIQUE (`name`)
 );
 CREATE TABLE `orders`(
     `order_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `customer_id` BIGINT UNSIGNED NOT NULL,
+    `customer_id` VARCHAR(255) NOT NULL,
     `table_no` BIGINT NOT NULL,
     `specifications` TEXT NULL,
     `ordered_time` DATETIME NOT NULL,
@@ -27,16 +28,15 @@ CREATE TABLE `item_list`(
 );
 CREATE TABLE `sessions`(
     `session_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `user_id` BIGINT UNSIGNED NOT NULL,
+    `user_id` VARCHAR(255) NOT NULL,
     `refresh_token_hash` VARCHAR(255) NOT NULL,
-    `expires_at` DATETIME NOT NULL,
     `revoked` BOOLEAN NOT NULL DEFAULT '0'
 );
 CREATE TABLE `sub_orders`(
     `order_id` BIGINT UNSIGNED NOT NULL,
     `item_id` BIGINT UNSIGNED NOT NULL,
     `quantity` INT NOT NULL,
-    `chef_id` BIGINT UNSIGNED NULL,
+    `chef_id` VARCHAR(255) NULL,
     PRIMARY KEY(`order_id`,`item_id`)
 );
 CREATE TABLE `categories`(

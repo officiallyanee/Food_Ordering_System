@@ -11,7 +11,7 @@ body {
 
 .main {
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 90px auto;
 }
 
 .cards {
@@ -58,7 +58,14 @@ body {
   font-size: 12px;
   margin-top: -2px;
 }
-
+.card_details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.card_details div{
+  display:inline;
+}
 .note {
   position: absolute;
   top: 8px;
