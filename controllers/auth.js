@@ -11,7 +11,7 @@ export async function register(req, res) {
         console.log(req.body);
         const { name, email, password } = req.body;
         const user_id = uuidv4();
-        const salt =generateSalt(16);
+        const salt = bcrypt.genSaltSync(10);
         const pwd_hash = await bcrypt.hash(password, salt);
         const role = "customer";
         const user = {user_id, name, email, pwd_hash ,role};
