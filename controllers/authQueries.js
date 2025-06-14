@@ -9,7 +9,7 @@ export async function postUserDetails(user){
 
 export async function getUserDetails(name){
     const sql = "SELECT * FROM login_details WHERE name = ?";
-    const result = await db.query(sql, [name]);
+    const [result] = await db.query(sql, [name]);
     return result[0];
 }
 

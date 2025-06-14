@@ -15,16 +15,9 @@ export async function register(req, res) {
         const pwd_hash = await bcrypt.hash(password, salt);
         const role = "customer";
         const user = {user_id, name, email, pwd_hash ,role};
-        console.log(user);
-        console.log(generateTokens(user));
-        const { access_token, refresh_token } = generateTokens(user);
-        console.log("generated tokens");
+        const token = generateToken(user);
         await postUserDetails(user);
-        console.log("posted user info");
-        await postRefreshToken(user_id,refresh_token);
-        console.log("posted refresh token");
-        res.cookie('access_token', access_token, { httpOnly: true, sameSite: 'strict' })  
-           .cookie('refresh_token', refresh_token, { httpOnly: true, sameSite: 'strict'})
+        res.cookie('token', token, { httpOnly: true, sameSite: 'strict' })  
            .status(201)
            .redirect('/menu');
     } catch (error) {
@@ -36,27 +29,36 @@ export async function register(req, res) {
 export async function login(req, res) {
     try {
         const { name, password } = req.body;
+
         const user = await getUserDetails(name);
+        console.log(user);
+        if (!user ) {
+            return res.status(400).redirect('/login');
+        }
+
         const isMatch = await bcrypt.compare(password, user.pwd_hash);
+        console.log("Is Match: " + isMatch);
+
         if (isMatch) {
-            const { access_token, refresh_token } = generateTokens(user);
-            await postRefreshToken(user.user_id,refresh_token);
-            res.cookie('access_token', access_token, { httpOnly: true, sameSite: 'none' ,maxAge: 900000})
-               .cookie('refresh_token', refresh_token, { httpOnly: true, sameSite: 'none' , maxAge: 900000})
-               .status(201)
-               .redirect('/menu');
+            const token = generateToken(user);
+            return res.cookie('token', token, {
+                    httpOnly: true,
+                    sameSite: 'strict'
+                })
+                .status(201)
+                .redirect('/menu');
         } else {
-            res.status(400).redirect('/login');
+            return res.status(400).redirect('/login');
         }
     } catch (error) {
-        res.status(400).redirect('/login');
-    }    
+        console.error("Login error:", error);
+        return res.status(500).redirect('/login');  
+    }
 }
 
-function generateTokens(user) {
+
+function generateToken(user) {
     const user_token_info = {id:user.user_id,name:user.name, role:user.role};
-    const access_token = jwt.sign(user_token_info, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
-    const refresh_token = jwt.sign(user_token_info, process.env.REFRESH_TOKEN_SECRET);
-    console.log(access_token, refresh_token);
-    return { access_token: access_token, refresh_token: refresh_token }
+    const token = jwt.sign(user_token_info, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '2d' });
+    return token;
 }

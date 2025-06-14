@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All orders</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+    <script defer src="scripts/navbar.js"></script>
+</head>
+<body class="p-3 m-0 border-0 bd-example m-0 border-0">
+    <%- include ('navbar') -%>
+    <nav class="navbar navbar-light bg-light mt-5 fixed-top p-1">
+        <form method="GET" action="/admin" class="d-flex mb-3">
+            <input type="text" name="search" class="form-control me-2" placeholder="Search by customer name..." value="<%= search || '' %>">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+        <ul class="pagination">
+            <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+            <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= limit %>&search=<%= search %>" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+            </li>
+
+            <% 
+            let start = Math.max(1, currentPage - 2);
+            let end = Math.min(totalPages, currentPage + 2);
+            for (let i = start; i <= end; i++) { 
+            %>
+            <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>&search=<%= search %>"><%= i %></a>
+            </li>
+            <% } %>
+
+            <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+            <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%= limit %>&search=<%= search %>" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+            </li>
+        </ul>
+    </nav>
+    <div id="orders row" class="row mt-5 pt-5">
+        <% if (orders.length === 0) { %>
+        <div class="alert alert-warning">No orders found.</div>
+        <% } else { %>
+        <%- orders.map((order) => `
+        <div class="col-sm-3 mt-3">
+            <div id="order${order.order_id}" class="card h-100">
+                <div class=" card-body">
+                    <h5 class="card-title">Order</h5>
+                    <div class="card-text">Made by : ${order.name}</div>
+                    <div class="card-text">At table no : ${order.table_no}</div>
+                    <div class="card-text">Order Time : ${order.ordered_time}</div>
+                    <div class="card-text">Received Time : ${order.received_time}</div>
+                </div>   
+                <ul id="${order.order_id} items" class="list-group list-group-flush"></ul>
+                <div class="card-body">
+                    <div class="card-text">Total Fare : ${order.total_fare}</div>
+                    <button id="${order.order_id} payment" value="${order.order_id}">Payment received</button>
+                </div>
+            </div>
+        </div>
+        `).join('') -%>
+        <% } %>
+    </div>
+    <script>
+        const orders = JSON.parse(`<%- JSON.stringify(orders) %>`);
+        function writeItems(){    
+            orders.forEach((order) => {
+                let subOrderHTML = '';
+                order.subOrders.forEach((subOrder) => {
+                    subOrderHTML += `<li class="list-group-item">${subOrder.name}(${subOrder.quantity})</li>`; 
+                });
+                document.getElementById(`${order.order_id} items`).innerHTML = subOrderHTML;
+                let paymentButton = document.getElementById(`${order.order_id} payment`);
+                paymentButton.addEventListener("click",async() => { 
+                    await fetch(`/admin/payment`,
+                    {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({orderID:paymentButton.value})
+                    }).then(response => response.json())
+                    .then(data => {
+                        location.assign(data.redirectTo);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                });
+            })
+        }
+        writeItems();
+    </script>
+</body>
+</html>

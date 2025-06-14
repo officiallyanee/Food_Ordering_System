@@ -7,7 +7,7 @@ CREATE TABLE `login_details`(
      UNIQUE (`name`)
 );
 CREATE TABLE `orders`(
-    `order_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `order_id` VARCHAR(255) NOT NULL,
     `customer_id` VARCHAR(255) NOT NULL,
     `table_no` BIGINT NOT NULL,
     `specifications` TEXT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE `sessions`(
     `revoked` BOOLEAN NOT NULL DEFAULT '0'
 );
 CREATE TABLE `sub_orders`(
-    `order_id` BIGINT UNSIGNED NOT NULL,
+    `order_id` VARCHAR(255) NOT NULL,
     `item_id` BIGINT UNSIGNED NOT NULL,
     `quantity` INT NOT NULL,
     `chef_id` VARCHAR(255) NULL,

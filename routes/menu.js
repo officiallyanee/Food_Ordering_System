@@ -1,6 +1,6 @@
 import {getItemsByCategory,getAllCategories,getItemPriceList} from '../controllers/customerQueries.js' 
 import express from 'express';
-import { mapToJson, jsonToMap } from '../utils/conversion.js';
+import {v4 as uuidv4} from 'uuid';
 const menuRouter = express.Router();
 
 menuRouter.get('/', async (req, res) => {
@@ -8,7 +8,8 @@ menuRouter.get('/', async (req, res) => {
     const categories = await getAllCategories();
     res.render('menu',{
         items:result,
-        categories:categories
+        categories:categories,
+        userRole: req.user.role
     });
 }) 
 
@@ -21,14 +22,5 @@ menuRouter.get('/:category', async (req, res) => {
     });
 })
 
-menuRouter.get('/itemList/:itemList', async (req, res) => {
-    console.log(req.params);
-    const itemPriceList = await getItemPriceList(req.params['itemList']);
-    let total = 0;
-    itemPriceList.forEach((item) => {total = total + Number(item.price)});
-    console.log(itemPriceList);
-    console.log(total)
-    res.render('itemList', { itemPriceList :itemPriceList, total:total});
-})
 
 export default menuRouter

@@ -5,9 +5,12 @@ import menuRouter from './routes/menu.js';
 import loginRouter from './routes/login.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { authenticateAccessToken } from './middlewares/auth.middleware.js';
+import { authenticateAccessToken, restrictTo } from './middlewares/auth.middleware.js';
 import cookieParser from 'cookie-parser';
-
+import itemListRouter from './routes/itemList.js';
+import ordersRouter from './routes/orders.js';
+import chefRouter from './routes/chef.js';
+import adminRouter from './routes/admin.js';
 const app = express();
 const PORT = 8080;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -36,10 +39,13 @@ app.use((err,req,res,next)=>{
     res.status(500).send('Something broke!');
 });
 
-app.use('/', loginRouter);
+app.use('/', authenticateAccessToken,loginRouter);
 app.use((req, res, next) => authenticateAccessToken(req, res, next));
-app.use('/menu', menuRouter);
-
+app.use('/menu', restrictTo(['admin', 'customer', 'chef']), menuRouter);
+app.use('/itemList',restrictTo(['admin', 'customer', 'chef']), itemListRouter);
+app.use('/orders', restrictTo(['admin', 'customer', 'chef']), ordersRouter);
+app.use('/chef', restrictTo(['chef']), chefRouter);
+app.use('/admin', restrictTo(['admin']), adminRouter);
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

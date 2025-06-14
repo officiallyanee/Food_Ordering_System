@@ -29,8 +29,9 @@ body {
 
 .card_image {
   position: relative;
-  height: 250px;
-  width: 360px;
+  height: 300px;
+  width: 100%;
+  overflow: hidden;
 }
 
 .card_image img {
