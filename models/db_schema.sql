@@ -26,12 +26,6 @@ CREATE TABLE `item_list`(
     `image_url` VARCHAR(255) NOT NULL,
     PRIMARY KEY(`item_id`)
 );
-CREATE TABLE `sessions`(
-    `session_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `user_id` VARCHAR(255) NOT NULL,
-    `refresh_token_hash` VARCHAR(255) NOT NULL,
-    `revoked` BOOLEAN NOT NULL DEFAULT '0'
-);
 CREATE TABLE `sub_orders`(
     `order_id` VARCHAR(255) NOT NULL,
     `item_id` BIGINT UNSIGNED NOT NULL,
@@ -57,8 +51,6 @@ ALTER TABLE
     `sub_orders` ADD CONSTRAINT `sub_orders_order_id_foreign` FOREIGN KEY(`order_id`) REFERENCES `orders`(`order_id`);
 ALTER TABLE
     `sub_orders` ADD CONSTRAINT `sub_orders_chef_id_foreign` FOREIGN KEY(`chef_id`) REFERENCES `login_details`(`user_id`);
-ALTER TABLE
-    `sessions` ADD CONSTRAINT `sessions_user_id_foreign` FOREIGN KEY(`user_id`) REFERENCES `login_details`(`user_id`);
 ALTER TABLE
     `categories` ADD CONSTRAINT `categories_item_id_foreign` FOREIGN KEY(`item_id`) REFERENCES `item_list`(`item_id`);
 ALTER TABLE
