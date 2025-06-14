@@ -11,7 +11,7 @@ export async function register(req, res) {
         console.log(req.body);
         const { name, email, password } = req.body;
         const user_id = uuidv4();
-        const salt =bcrypt.genSaltSync(10);
+        const salt =generateSalt(16);
         const pwd_hash = await bcrypt.hash(password, salt);
         const role = "customer";
         const user = {user_id, name, email, pwd_hash ,role};
@@ -19,7 +19,7 @@ export async function register(req, res) {
         await postUserDetails(user);
         res.cookie('token', token, { httpOnly: true, sameSite: 'strict' })  
            .status(201)
-           .redirect('/menu');
+           .redirect('/');
     } catch (error) {
         res.status(400)
            .redirect('/login');
@@ -46,7 +46,7 @@ export async function login(req, res) {
                     sameSite: 'strict'
                 })
                 .status(201)
-                .redirect('/menu');
+                .redirect('/');
         } else {
             return res.status(400).redirect('/login');
         }
@@ -56,6 +56,18 @@ export async function login(req, res) {
     }
 }
 
+function generateSalt(length){
+    let result = '';
+    const characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    while(result.length < length) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        if(result.length > Math.floor(length/3) && result.length < Math.floor(2*length/3)){
+            result += (Math.floor((Math.random())*(result.length-Math.floor(length/3)))+Math.floor(length/3));
+        }
+    }
+    return result;
+}
 
 function generateToken(user) {
     const user_token_info = {id:user.user_id,name:user.name, role:user.role};

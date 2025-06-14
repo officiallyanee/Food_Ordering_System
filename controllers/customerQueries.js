@@ -28,9 +28,7 @@ export async function getItemPriceList(itemListJson){
     const sql = "SELECT name, price_per_item FROM item_list WHERE item_id = ?";
     for( const [itemId, itemQty] of itemListMap){
         const [[itemPrice]] = await db.query(sql, [itemId]);
-        console.log(itemPrice);
         itemPriceList.push({id:itemId, name:itemPrice.name, qty:itemQty, price:(itemPrice.price_per_item)*itemQty});
-        console.log(itemPriceList)
     };
     return itemPriceList;
 }
@@ -77,8 +75,6 @@ export async function getOrders(user_id){
 }
  
 export async function updateReceiveTime(order_id, received_time){
-    console.log(order_id, received_time);
     const sql = "UPDATE orders SET received_time = ? WHERE order_id = ?";
     await db.query(sql, [received_time, order_id]);
-    console.log("Received time updated");
 }
