@@ -26,22 +26,21 @@
                     </a>
                 </li>
 
-                <% let start=Math.max(1, currentPage - 2); let end=Math.min(totalPages, currentPage + 2); for (let
-                    i=start; i <=end; i++) { %>
+                <% let start=Math.max(1, currentPage - 2); let end=Math.min(totalPages, currentPage + 2); for (let i=start; i <=end; i++) { %>
                     <li class="page-item <%= currentPage === i ? 'active' : '' %>">
                         <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>&search=<%= search %>">
                             <%= i %>
                         </a>
                     </li>
-                    <% } %>
+                <% } %>
 
-                        <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
-                            <a class="page-link"
-                                href="?page=<%= currentPage + 1 %>&limit=<%= limit %>&search=<%= search %>"
-                                aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
+                <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+                    <a class="page-link"
+                        href="?page=<%= currentPage + 1 %>&limit=<%= limit %>&search=<%= search %>"
+                        aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
             </ul>
         </nav>
         <div id="orders row" class="row mt-5 pt-5">

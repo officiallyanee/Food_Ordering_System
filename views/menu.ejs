@@ -13,19 +13,24 @@
 
 <body class="p-3 m-0 border-0 bd-example m-0 border-0">
     <%- include ('navbar') -%>
-        <div class="dropdown pt-2 mt-5 fixed-top">
-            <select id="category">
-                <%- categories.map((category)=> `<option value="${category.category}">${category.category}</option>
-                    `).join('') -%>
-            </select>
-        </div>
+          <nav class="navbar navbar-light bg-light fixed-top p-2 mt-5">
+            <div class="container-fluid d-flex justify-content-between align-items-center">
+                <div class="dropdown">
+                    <select id="category" class="form-select">
+                        <%- categories.map((category)=> `<option value="${category.category}">${category.category}</option>`).join('') -%>
+                    </select>
+                </div>
+                <button class="btn btn-danger" id="clear">Clear List</button>
+            </div>
+        </nav>
+
         <div class="row m-5 p-4 mt-5 pt-5">
             <%- items.map((item)=> `
                 <div class="col-12 col-sm-4 mb-3">
                     <div class="card mx-auto">
                         <div class="card_image">
                             <img src="${item.image_url}" alt="Image of ${item.name}" class="card-img-top ">
-                            <span class="card_price"><span>Rs.</span>${item.price_per_item}</span>
+                            <span class="card_price"><span>₹</span>${item.price_per_item}</span>
                         </div>
                         <div class="card_content card-body">
                             <h2 class="card-title">${item.name}</h2>
@@ -78,14 +83,17 @@
                 <div class="card mx-auto">
                     <div class="card_image">
                     <img src="${item.image_url}" alt="Image of ${item.name}" class="card-img-top ">
-                    <span class="card_price"><span>$</span>${item.price_per_item}</span>
+                    <span class="card_price"><span>₹</span>${item.price_per_item}</span>
                     </div>
                     <div class="card_content card-body">
                     <h2 class="card-title">${item.name}</h2>
                     <div class="card-text">
                         <div class="card_details">
                             <div>
-                                Availablity: ${item.availablity}
+                                Availablity: 
+                                <span>
+                                    ${item.availablity === 1 ? 'Available' : 'Not Available'}
+                                 </span>
                             </div>
                             <div>
                                 <button id="${item.name} add" value="${item.item_id}"> + </button>
@@ -206,6 +214,11 @@
                     localStorage.setItem("itemList", itemListObj);
                 });
             }
+            let clear = document.getElementById("clear");
+            clear.addEventListener("click", () => {
+                localStorage.clear();
+                location.reload();
+            }); 
         </script>
 </body>
 
