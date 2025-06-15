@@ -8,8 +8,6 @@ adminRouter.get('/',async (req, res)=>{
     const offset = (page - 1) * limit;
     const search = req.query.search || '';
     const {total, orders }= await getAllOrders(offset,limit,search);
-    console.log("orders got");
-    console.log(orders);
     res.render('admin',{
         orders:orders,
         totalPages: Math.ceil(total /8),

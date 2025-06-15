@@ -39,7 +39,7 @@ app.use((err,req,res,next)=>{
     res.status(500).send('Something broke!');
 });
 
-app.use('/', authenticateAccessToken,loginRouter);
+app.use('/', loginRouter);
 app.use((req, res, next) => authenticateAccessToken(req, res, next));
 app.use('/menu', restrictTo(['admin', 'customer', 'chef']), menuRouter);
 app.use('/itemList',restrictTo(['admin', 'customer', 'chef']), itemListRouter);
