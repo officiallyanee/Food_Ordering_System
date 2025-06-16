@@ -13,9 +13,8 @@
 <body class="p-3 m-0 border-0 bd-example m-0 border-0">
     <%- include ('navbar') -%>
         <script>
-            const itemList = localStorage.getItem("itemList");
+            const itemList = localStorage.getItem("itemList")|| '{}';
             const itemListObj = JSON.parse(itemList);
-            const itemListMap = new Map(Object.entries(itemListObj));
             let itemPriceList = {};
             let total = 0;
             const jsonString = JSON.stringify(itemListObj);
@@ -87,9 +86,10 @@
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ order, itemListMap })
+                            body: JSON.stringify({ order, itemListObj })
                         }).then(response => response.json())
                             .then(data => {
+                                localStorage.clear();   
                                 location.assign(data.redirectTo);
                             });
 

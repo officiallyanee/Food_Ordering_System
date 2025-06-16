@@ -22,9 +22,10 @@ itemListRouter.get('/tablestatus/:tableno', async (req, res) => {
 
 itemListRouter.post('/order', async (req, res) => {
     const user= req.user;
-    const {order, itemListMap} = req.body;
+    const {order, itemListObj} = req.body;
     order["order_id"] = uuidv4();
     order["customer_id"] = user.id;
+    const itemListMap = new Map(Object.entries(itemListObj));
     const itemList = Array.from(itemListMap, ([id, qty]) => ({ id, qty }));
     const subOrder={
         "order_id":order["order_id"],
