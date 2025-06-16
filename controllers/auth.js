@@ -11,10 +11,13 @@ export async function register(req, res) {
         console.log(req.body);
         const { name, email, password } = req.body;
         const user_id = uuidv4();
-        const salt = bcrypt.genSaltSync(10);
-        const pwd_hash = await bcrypt.hash(password, salt);
+        const salt = generateSalt(8);
+        const salted_pwd= password + salt;
+        const pwd_hash = await bcrypt.hash(salted_pwd, 10);
         const role = "customer";
-        const user = {user_id, name, email, pwd_hash ,role};
+        const pwd_store= salt+pwd_hash;
+        const user = {user_id, name, email,pwd_store,role};
+        console.log(user);
         const token = generateToken(user);
         await postUserDetails(user);
         res.cookie('token', token, { httpOnly: true, sameSite: 'strict' })  
@@ -35,8 +38,10 @@ export async function login(req, res) {
         if (!user ) {
             return res.status(400).redirect('/login');
         }
-
-        const isMatch = await bcrypt.compare(password, user.pwd_hash);
+        const salt = user.pwd_hash.slice(0,8);
+        const salted_hash = user.pwd_hash.slice(8);
+        const salted_pwd = password + salt;
+        const isMatch = await bcrypt.compare(salted_pwd, salted_hash);
         console.log("Is Match: " + isMatch);
 
         if (isMatch) {
@@ -62,9 +67,6 @@ function generateSalt(length){
     const charactersLength = characters.length;
     while(result.length < length) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
-        if(result.length > Math.floor(length/3) && result.length < Math.floor(2*length/3)){
-            result += (Math.floor((Math.random())*(result.length-Math.floor(length/3)))+Math.floor(length/3));
-        }
     }
     return result;
 }

@@ -28,7 +28,7 @@ export async function getAllOrders(offset= 0, limit= 8, search){
         INNER JOIN item_list ON sub_orders.item_id = item_list.item_id 
         WHERE order_id = ?`, [order.order_id]);
 
-    order.subOrders = subOrders;
+        order.subOrders = subOrders;
     }
 
     return { total, orders};
