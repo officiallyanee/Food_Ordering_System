@@ -65,19 +65,25 @@
         </div>
         <script>
             let categorySelect = document.getElementById("category");
+            let itemsOnPage =JSON.parse(`<%- JSON.stringify(items) %>`);
             let itemList = localStorage.getItem("itemList") ? new Map(Object.entries(JSON.parse(localStorage.getItem("itemList")))) : new Map();
-            if (itemList.size > 0) {
-                itemList.forEach((qty, id) => {
-                    document.getElementById(id + " qty").innerHTML = qty;
-                })
+            function listItemQty() {           
+                if (itemList.size > 0) {
+                    itemList.forEach((qty, id) => {
+                        if(itemsOnPage.find((item) => item.item_id == id) === undefined) return;
+                        document.getElementById(id + " qty").innerHTML = qty;
+                    })
+                }
             }
+            listItemQty();
             categorySelect.addEventListener("change", async (event) => {
                 let category = event.target.value;
+                console.log(category);
                 await fetch(`/menu/${category}`)
                     .then(response => response.json())
                     .then(data => {
                         let itemsContainer = document.getElementsByClassName("row")[0];
-
+                        itemsOnPage = data.items;
                         itemsContainer.innerHTML = data.items.map((item) => `
                 <div class="col-12 col-sm-4 mb-3">
                 <div class="card mx-auto">
@@ -113,7 +119,7 @@
                 </div>
                 </div>
             `).join('');
-
+                        listItemQty();
                         createList(data.items);
                     });
             });

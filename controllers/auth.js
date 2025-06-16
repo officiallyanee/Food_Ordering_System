@@ -3,13 +3,14 @@ import { v4 as uuidv4 } from 'uuid';
 import {getUserDetails, postRefreshToken, postUserDetails } from './authQueries.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import { passwordStrength } from 'check-password-strength';
 
 dotenv.config();
 
 export async function register(req, res) {
     try {
-        console.log(req.body);
         const { name, email, password } = req.body;
+        if(passwordStrength(password).id<2) return res.status(400).redirect('/login');
         const user_id = uuidv4();
         const salt = generateSalt(8);
         const salted_pwd= password + salt;
@@ -17,7 +18,6 @@ export async function register(req, res) {
         const role = "customer";
         const pwd_store= salt+pwd_hash;
         const user = {user_id, name, email,pwd_store,role};
-        console.log(user);
         const token = generateToken(user);
         await postUserDetails(user);
         res.cookie('token', token, { httpOnly: true, sameSite: 'strict' })  
@@ -34,7 +34,6 @@ export async function login(req, res) {
         const { name, password } = req.body;
 
         const user = await getUserDetails(name);
-        console.log(user);
         if (!user ) {
             return res.status(400).redirect('/login');
         }
@@ -42,7 +41,6 @@ export async function login(req, res) {
         const salted_hash = user.pwd_hash.slice(8);
         const salted_pwd = password + salt;
         const isMatch = await bcrypt.compare(salted_pwd, salted_hash);
-        console.log("Is Match: " + isMatch);
 
         if (isMatch) {
             const token = generateToken(user);

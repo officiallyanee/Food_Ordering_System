@@ -6,7 +6,6 @@ const loginRouter = express.Router();
 
 loginRouter.get('/', (req, res) => {
     const token = req.cookies?.token;
-    console.log(token);
     if(!token) return res.redirect('/login');
     else authenticateAccessToken(req, res, () => {});
     if(req.user.role=='customer') return res.redirect('/menu');
