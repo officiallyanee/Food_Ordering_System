@@ -14,7 +14,7 @@ export async function register(req, res) {
         const salt = generateSalt(8);
         const salted_pwd= password + salt;
         const pwd_hash = await bcrypt.hash(salted_pwd, 10);
-        const role = "chef";
+        const role = "customer";
         const pwd_store= salt+pwd_hash;
         const user = {user_id, name, email,pwd_store,role};
         const token = generateToken(user);
