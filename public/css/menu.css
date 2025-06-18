@@ -10,8 +10,8 @@ body {
 }
 
 .main {
-  max-width: 1200px;
-  margin: 90px auto;
+  max-width: 75rem;
+  margin: 5.625rem auto;
 }
 
 .cards {
@@ -29,7 +29,7 @@ body {
 
 .card_image {
   position: relative;
-  height: 300px;
+  height: 18.75rem;
   width: 100%;
   overflow: hidden;
 }
@@ -37,44 +37,47 @@ body {
 .card_image img {
   width: 100%;
   height: 100%;
-  object-fit:cover;
+  object-fit: cover;
 }
 
 .card_price {
   position: absolute;
-  bottom: 8px;
-  right: 8px;
+  bottom: 0.5rem;
+  right: 0.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 45px;
-  height: 45px;
+  width: 2.8125rem;
+  height: 2.8125rem;
   border-radius: 0.25rem;
   background-color: #c89b3f;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
 }
 
 .card_price span {
-  font-size: 12px;
-  margin-top: -2px;
+  font-size: 0.75rem;
+  margin-top: -0.125rem;
 }
+
 .card_details {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-.card_details div{
-  display:inline;
+
+.card_details div {
+  display: inline;
 }
+
 .note {
   position: absolute;
-  top: 8px;
-  left: 8px;
-  padding: 4px 8px;
+  top: 0.5rem;
+  left: 0.5rem;
+  padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
   background-color: #c89b3f;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
 }
 
@@ -93,7 +96,7 @@ body {
 .card {
   background-color: white;
   border-radius: 0.25rem;
-  box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 1.25rem 2.5rem -0.875rem rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -101,14 +104,14 @@ body {
 
 .card_content {
   position: relative;
-  padding: 16px 12px 32px 24px;
-  margin: 16px 8px 8px 0;
-  max-height: 290px;
+  padding: 1rem 0.75rem 2rem 1.5rem;
+  margin: 1rem 0.5rem 0.5rem 0;
+  max-height: 18.125rem;
   overflow-y: scroll;
 }
 
 .card_content::-webkit-scrollbar {
-  width: 8px;
+  width: 0.5rem;
 }
 
 .card_content::-webkit-scrollbar-track {
@@ -118,23 +121,23 @@ body {
 
 .card_content::-webkit-scrollbar-thumb {
   background: #c89b3f;
-  border-radius: 15px;
+  border-radius: 0.9375rem;
 }
 
 .card_title {
   position: relative;
-  margin: 0 0 24px;
-  padding-bottom: 10px;
+  margin: 0 0 1.5rem;
+  padding-bottom: 0.625rem;
   text-align: center;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 700;
 }
 
 .card_title::after {
   position: absolute;
   display: block;
-  width: 50px;
-  height: 2px;
+  width: 3.125rem;
+  height: 0.125rem;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
@@ -143,18 +146,17 @@ body {
 }
 
 hr {
-  margin: 24px auto;
-  width: 50px;
-  border-top: 2px solid #c89b3f;
+  margin: 1.5rem auto;
+  width: 3.125rem;
+  border-top: 0.125rem solid #c89b3f;
 }
 
 .card_text p {
-  margin: 0 0 24px;
-  font-size: 14px;
+  margin: 0 0 1.5rem;
+  font-size: 0.875rem;
   line-height: 1.5;
 }
 
 .card_text p:last-child {
   margin: 0;
 }
-

@@ -18,7 +18,6 @@ export async function register(req, res) {
         const pwd_store= salt+pwd_hash;
         const user = {user_id, name, email,pwd_store,role};
         const token = generateToken(user);
-        console.log("INSERT INTO login_details (`user_id`,`name`, `email`, `pwd_hash`, `role`) VALUES "+ `('${user.user_id}', '${user.name}', '${user.email}', '${user.pwd_store}', '${user.role}')`);
         await postUserDetails(user);
         res.cookie('token', token, { httpOnly: true, sameSite: 'strict' })  
            .status(201)

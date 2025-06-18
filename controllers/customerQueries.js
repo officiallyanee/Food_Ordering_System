@@ -15,7 +15,7 @@ export async function getItemsByCategory(category){
         `, [category]);
     return rows;
 }
-
+    
 export async function getAllCategories(){
     const [rows] = await db.query(`SELECT category FROM category_list`);
     return rows;
@@ -59,7 +59,7 @@ export async function createSubOrder(subOrder){
 }
 
 export async function getOrders(user_id){
-    const sql = "SELECT * FROM orders WHERE received_time IS NULL AND customer_id = ?";
+    const sql = "SELECT * FROM orders WHERE payment_status = 'pending' AND customer_id = ?";
     const [orders] = await db.query(sql, [user_id]);
     for(const order of orders){
         const sql = `SELECT sub_orders.item_id, sub_orders.quantity, item_list.name 
@@ -75,4 +75,13 @@ export async function getOrders(user_id){
 export async function updateReceiveTime(order_id, received_time){
     const sql = "UPDATE orders SET received_time = ? WHERE order_id = ?";
     await db.query(sql, [received_time, order_id]);
+}
+
+export async function getCustomerTableNo(customer_id){
+    const sql = "SELECT table_no FROM orders WHERE payment_status = 'pending' AND customer_id = ?";
+    const [[tableNo]] = await db.query(sql, [customer_id]);
+    if(tableNo === null || tableNo === undefined || tableNo == {}){
+        return null;
+    }
+    return tableNo.table_no;
 }

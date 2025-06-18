@@ -14,22 +14,28 @@
     <% if (orders.length === 0) { %>
         <div class="alert alert-warning ">You can see your orders here.<br> No orders found. <br>Add items to your list and place the order going to Item List! </div>
         <% } else { %>
-    <%- orders.map((order) => `
+    <% orders.forEach((order) => { %>
     <div class="col-sm-4 mb-3">
         <div id="order" class="card h-100">
             <div class=" card-body">
                 <h5 class="card-title">Order</h5>
-                <div class="card-text">Table No : ${order.table_no}</div>
-                <div class="card-text">Order Time : ${order.ordered_time}</div>            </div>   
-            <ul id="${order.order_id} items" class="list-group list-group-flush"></ul>
+                <div class="card-text">Table No : <%= order.table_no %></div>
+                <div class="card-text">Order Time : <%= order.ordered_time %></div>            
+            </div>   
+            <ul id="<%= order.order_id %> items" class="list-group list-group-flush"></ul>
             <div class="card-body">
-                <div class="card-text">Total Fare : Rs.${order.total_fare}</div>
+                <div class="card-text">Total Fare : Rs. <%= order.total_fare %></div>
+                <% if (order.received_time === null) { %>
                 <div class="card-text">Click the button below when you have received your order</div>
-                <button id="${order.order_id}" value="${order.order_id}">Received</button>
+                <button id="<%= order.order_id %>" value="<%= order.order_id %>">Received</button>
+                <% } else { %>
+                <div class="card-text">Received Time : <%= order.received_time %></div>
+                <div class="card-text">Pay at the counter or to the waiter</div>
+                <% } %>
             </div>
         </div>
     </div>
-    `).join('') -%>
+    <% }) %>
     <% } %>
     </div>
     <script>
@@ -47,6 +53,7 @@
         async function addEventListenerToReceivedButton() {
             for(let order of orders){
                 let button = document.getElementById(`${order.order_id}`);
+                if(!button) continue;
                 await button.addEventListener("click",async() => {
                     const orderID = String(button.value);
                     const received_time = new Date().toISOString().slice(0, 19).replace('T', ' ');

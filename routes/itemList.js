@@ -1,5 +1,5 @@
 import express from 'express';
-import { getItemPriceList , getTableStatus, placeOrder, createSubOrder} from '../controllers/customerQueries.js';
+import { getItemPriceList , getTableStatus, placeOrder, createSubOrder, getCustomerTableNo} from '../controllers/customerQueries.js';
 import {v4 as uuidv4} from 'uuid';
 
 const itemListRouter = express.Router();
@@ -18,6 +18,12 @@ itemListRouter.get('/itempricelist/:itemList', async (req, res) => {
 itemListRouter.get('/tablestatus/:tableno', async (req, res) => {
     const tableStatus =await getTableStatus(req.params['tableno']);
     res.send({tableStatus: tableStatus});
+})
+
+itemListRouter.get('/customerTableNo', async (req, res) => {
+    const customer_id= req.user.id;
+    const customerTableNo =await getCustomerTableNo(customer_id);
+    res.send({customerTableNo: customerTableNo});
 })
 
 itemListRouter.post('/order', async (req, res) => {
