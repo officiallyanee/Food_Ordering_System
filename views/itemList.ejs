@@ -53,7 +53,7 @@
                 <h6 class="card-body">Total : Rs.${total}
                 </h6>
                 <label for="specifications">Special Instructions</label>
-                <textarea id="specifications" placeholder="Enter your specifications here"></textarea>
+                <textarea id="specifications" placeholder="Enter your specifications here" maxlength="256"></textarea>
                  <label for="tableno">Table Number</label>
                 ${customerTableNo ?
                         `<input type="number" id="tableno" value="${customerTableNo}" readonly class="form-control-plaintext">` :
