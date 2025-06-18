@@ -7,7 +7,8 @@ ordersRouter.get('/',async (req, res)=>{
     const orders = await getOrders(req.user.id);
     res.render('orders',{
         orders:orders,
-        userRole: req.user.role
+        userRole: req.user.role,
+        currentPage: 'orders'
     });
 });
 

@@ -59,3 +59,13 @@ VALUES
     (18, 2), (18, 6), (18, 9),
     (19, 2), (19, 6), (19, 8),
     (20, 5), (20, 6);
+
+INSERT INTO `login_details` 
+    (`user_id`,`name`, `email`, `pwd_hash`, `role`) 
+VALUES 
+    ('3e976206-b72e-48f1-86e0-95283fbb1c39', 'chef', 'c@c', 'nDT2OA2F$2b$10$Z5.U.sRKzJFhGAbjKhOM2..KaWpt0EzE/lN8xPNxD/PzJktlPX4Dm', 'chef') ;
+
+INSERT INTO `login_details`
+    (`user_id`,`name`, `email`, `pwd_hash`, `role`) 
+VALUES 
+    ('e284fcdb-8e4c-43f3-ac54-3d5d8528bb27', 'admin', 'a@a', 'Rc6rZfca$2b$10$V6GfW19bDY56AqUauY3w6.Mer5YTBnJl8cirSwIQx0y.7.XGhAFOG', 'admin') ; 

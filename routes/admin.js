@@ -14,7 +14,8 @@ adminRouter.get('/',async (req, res)=>{
         currentPage: page,
         limit: limit,
         search: search,
-        userRole: req.user.role
+        userRole: req.user.role,
+        currentPageName: 'admin'
     });
 });
 

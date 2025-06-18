@@ -24,7 +24,6 @@ export async function getAllCategories(){
 export async function getItemPriceList(itemListJson){
     const itemPriceList =[];
     const itemListMap = jsonToMap(itemListJson);
-    console.log(itemListMap);
     const sql = "SELECT name, price_per_item FROM item_list WHERE item_id = ?";
     for( const [itemId, itemQty] of itemListMap){
         const [[itemPrice]] = await db.query(sql, [itemId]);
@@ -36,7 +35,6 @@ export async function getItemPriceList(itemListJson){
 export async function getTableStatus(tableno){
     const sql = "SELECT payment_status FROM orders WHERE payment_status = 'pending' AND table_no = ?";
     const [[tableStatus]] = await db.query(sql, [tableno]);
-    console.log(tableStatus);
     if(tableStatus === null || tableStatus === undefined || tableStatus == {}){
         return true;
     }

@@ -9,7 +9,8 @@ menuRouter.get('/', async (req, res) => {
     res.render('menu',{
         items:result,
         categories:categories,
-        userRole: req.user.role
+        userRole: req.user.role,
+        currentPage: 'menu'
     });
 }) 
 

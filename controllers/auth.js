@@ -3,29 +3,29 @@ import { v4 as uuidv4 } from 'uuid';
 import {getUserDetails, postRefreshToken, postUserDetails } from './authQueries.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { passwordStrength } from 'check-password-strength';
 
 dotenv.config();
 
 export async function register(req, res) {
     try {
         const { name, email, password } = req.body;
-        if(passwordStrength(password).id<2) return res.status(400).redirect('/login');
+        if(password.length<8) res.render('login', {err:"Password length needs to be atleast 8"})
         const user_id = uuidv4();
         const salt = generateSalt(8);
         const salted_pwd= password + salt;
         const pwd_hash = await bcrypt.hash(salted_pwd, 10);
-        const role = "customer";
+        const role = "chef";
         const pwd_store= salt+pwd_hash;
         const user = {user_id, name, email,pwd_store,role};
         const token = generateToken(user);
+        console.log("INSERT INTO login_details (`user_id`,`name`, `email`, `pwd_hash`, `role`) VALUES "+ `('${user.user_id}', '${user.name}', '${user.email}', '${user.pwd_store}', '${user.role}')`);
         await postUserDetails(user);
         res.cookie('token', token, { httpOnly: true, sameSite: 'strict' })  
            .status(201)
            .redirect('/');
     } catch (error) {
         res.status(400)
-           .redirect('/login');
+           .render('login', {error:"User already exists"});
     }
 }
 
@@ -51,7 +51,7 @@ export async function login(req, res) {
                 .status(201)
                 .redirect('/');
         } else {
-            return res.status(400).redirect('/login');
+            return res.status(400).render('login', {error:"Incorrect credentials"});
         }
     } catch (error) {
         console.error("Login error:", error);

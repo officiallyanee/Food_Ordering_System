@@ -11,7 +11,7 @@
 </head>
 
 <body class="p-3 m-0 border-0 bd-example m-0 border-0">
-    <%- include ('navbar') -%>
+    <%- include ('partials/navbar') -%>
         <script>
             const itemList = localStorage.getItem("itemList")|| '{}';
             const itemListObj = JSON.parse(itemList);
@@ -94,9 +94,8 @@
                             });
 
                     }
-                    else {
-                        alert("Table is not available. Check your table no. again");
-                    }
+                    else if (table !== "" && tableAvailable === false) {
+                        showToast("Table is not available. Check your table no. again");    }
                 });
 
                 let tableno = document.getElementById("tableno");
@@ -104,16 +103,18 @@
                     let table = document.getElementById("tableno").value;
                     let tableStatus = await checkTableStatus(table);
                     if (table !== "" && tableStatus === false) {
-                        alert("Table is not available. Check your table no. again");
+                        showToast("Table is not available. Check your table no. again");
                     }
                 });
 
                 async function checkTableStatus(table) {
                     let tableStatus = false;
                     if (table === "") {
-                        alert("Table number is required");
-                    } else if (1 > table && table > 50) {
-                        alert("Table number must be between 1 and 50");
+                        showToast("Table number cannot be empty");
+                        return 2;    
+                    } else if (1 > table || table > 50) {
+                        showToast("Table number should be between 1 and 50");
+                        return 2;
                     } else {
                         tableStatus = await fetch(`/itemList/tablestatus/${table}`)
                             .then(response => response.json())
@@ -133,6 +134,29 @@
                 }
             }
             htmlAdder();
+            function showToast(error){
+                const toastHTML=`
+                <div class="toast-container position-fixed bottom-0 end-0 p-2 m-5 z-2">
+                <div id="liveToast" class="toast text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-animation="true" data-bs-autohide="true" data-bs-delay="3000">
+                    <div class="toast-header">
+                    <strong class="me-auto">ERROR</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                    ${error}   
+                    </div>
+                </div>
+                </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', toastHTML);
+                const toastEl = document.getElementById('liveToast');
+                const toast = new bootstrap.Toast(toastEl);
+                toast.show();
+                    
+                toastEl.addEventListener('hidden.bs.toast', () => {
+                    toastEl.parentElement.remove(); 
+                });
+            }
         </script>
 </body>
 

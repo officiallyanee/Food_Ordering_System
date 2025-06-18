@@ -14,7 +14,7 @@ loginRouter.get('/', (req, res) => {
 })
 
 loginRouter.get('/login', (req, res) => {
-    return res.render('login');
+    return res.render('login', {error:null});
 })
 
 loginRouter.post('/signin', (req, res) => {

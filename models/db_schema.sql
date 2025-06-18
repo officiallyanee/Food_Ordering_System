@@ -1,9 +1,13 @@
+CREATE DATABASE `food_ordering_system`;
+
+USE `food_ordering_system`;
+
 CREATE TABLE `login_details`(
     `user_id` VARCHAR(255) NOT NULL PRIMARY KEY, 
     `name` CHAR(255) NOT NULL,
     `email` VARCHAR(255) NOT NULL,
     `pwd_hash` VARCHAR(255) NOT NULL,
-    `role` ENUM('customer','chef','admin') NOT ,
+    `role` ENUM('customer','chef','admin') NOT NULL,
      UNIQUE (`name`)
 );
 CREATE TABLE `orders`(
@@ -40,7 +44,7 @@ CREATE TABLE `categories`(
 );
 CREATE TABLE `category_list`(
     `category_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `category` CHAR(255) NOT NULL; 
+    `category` CHAR(255) NOT NULL 
 ); 
 
 ALTER TABLE

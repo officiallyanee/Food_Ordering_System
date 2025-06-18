@@ -6,7 +6,8 @@ chefRouter.get('/', async (req, res) => {
     const orders= await getAllPendingOrders();
     res.render('pendingOrders',{
         orders:orders,
-        userRole: req.user.role
+        userRole: req.user.role,
+        currentPage: 'chef'
     });
 });
 
