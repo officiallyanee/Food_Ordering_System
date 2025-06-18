@@ -8,7 +8,7 @@ ordersRouter.get('/',async (req, res)=>{
     res.render('orders',{
         orders:orders,
         userRole: req.user.role,
-        currentPage: 'orders'
+        currentPageName: 'orders'
     });
 });
 

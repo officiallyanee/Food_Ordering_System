@@ -10,7 +10,7 @@ menuRouter.get('/', async (req, res) => {
         items:result,
         categories:categories,
         userRole: req.user.role,
-        currentPage: 'menu'
+        currentPageName: 'menu'
     });
 }) 
 

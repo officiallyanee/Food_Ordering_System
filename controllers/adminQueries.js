@@ -16,7 +16,7 @@ export async function getAllOrders(offset= 0, limit= 8, search){
     INNER JOIN login_details ON orders.customer_id = login_details.user_id
     WHERE payment_status = 'pending'
         AND login_details.name LIKE ?
-    ORDER BY orders.order_id DESC
+    ORDER BY orders.ordered_time DESC
     LIMIT ? OFFSET ?`;
 
     const [orders] = await db.query(dataSql, [`%${search}%`, limit, offset]);

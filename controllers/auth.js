@@ -35,7 +35,7 @@ export async function login(req, res) {
 
         const user = await getUserDetails(name);
         if (!user ) {
-            return res.status(400).redirect('/login');
+            return res.status(400).render('login', {error:"No user found. Sign up first!"});
         }
         const salt = user.pwd_hash.slice(0,8);
         const salted_hash = user.pwd_hash.slice(8);

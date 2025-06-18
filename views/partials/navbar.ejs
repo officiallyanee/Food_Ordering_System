@@ -6,14 +6,14 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-        <a class="nav-link <%= currentPage === 'menu' ? 'active' : '' %>" aria-current="active" href="/menu" id="menu-link">Menu</a>
-        <a class="nav-link <%= currentPage === 'orders' ? 'active' : '' %>" href="/orders" id="orders-link">Orders</a>
-        <a class="nav-link <%= currentPage === 'itemList' ? 'active' : '' %>" aria-current="active" href="/itemList" id="item-list">Item List</a>
+        <a class="nav-link <%= currentPageName === 'menu' ? 'active' : '' %>" aria-current="active" href="/menu" id="menu-link">Menu</a>
+        <a class="nav-link <%= currentPageName === 'orders' ? 'active' : '' %>" href="/orders" id="orders-link">Orders</a>
+        <a class="nav-link <%= currentPageName === 'itemList' ? 'active' : '' %>" aria-current="active" href="/itemList" id="item-list">Item List</a>
         <% if (userRole === "admin") { %>
             <a class="nav-link <%= currentPageName === 'admin' ? 'active' : '' %>" href="/admin" id="admin-link">Admin</a>
         <% } %>
         <% if (userRole === "chef") { %>
-            <a class="nav-link <%= currentPage === 'chef' ? 'active' : '' %>" href="/chef" id="chef-link">Chef</a>
+            <a class="nav-link <%= currentPageName === 'chef' ? 'active' : '' %>" href="/chef" id="chef-link">Chef</a>
         <% } %>
         </div>
     </div>

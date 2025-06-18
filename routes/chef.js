@@ -7,7 +7,7 @@ chefRouter.get('/', async (req, res) => {
     res.render('pendingOrders',{
         orders:orders,
         userRole: req.user.role,
-        currentPage: 'chef'
+        currentPageName: 'chef'
     });
 });
 

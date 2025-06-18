@@ -5,7 +5,7 @@ import {v4 as uuidv4} from 'uuid';
 const itemListRouter = express.Router();
 
 itemListRouter.get('/', async (req, res) => {
-    res.render('itemList', { userRole: req.user.role, currentPage: 'itemList' });
+    res.render('itemList', { userRole: req.user.role, currentPageName: 'itemList' });
 })
 
 itemListRouter.get('/itempricelist/:itemList', async (req, res) => {
