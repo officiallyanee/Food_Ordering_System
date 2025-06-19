@@ -13,23 +13,3 @@ export async function getUserDetails(name){
     return result[0];
 }
 
-export async function getRefreshToken(refreshToken){
-    const sql = "SELECT * FROM sessions WHERE refresh_token = ?";
-    const result = await db.query(sql, [refreshToken]);
-    return result[0];
-}
-
-export async function postRefreshToken(user_id,refreshToken){
-    const salt = bcrypt.genSaltSync(10);
-    const refresh_token_hash = await bcrypt.hash(refreshToken, salt);
-    const sql = "INSERT INTO sessions (`refresh_token_hash`, `user_id`) VALUES (?)";
-    const values = [refresh_token_hash, user_id];
-    await db.query(sql, [values]);
-}
-
-export async function revokeRefreshToken(user_id){
-    const sql = `UPDATE FROM sessions 
-                SET revoked = 1
-                WHERE user_id= ? && revoked = 0`;
-    await db.query(sql, [user_id]);
-}

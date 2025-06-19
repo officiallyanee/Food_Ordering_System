@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
-import {getUserDetails, postRefreshToken, postUserDetails } from './authQueries.js';
+import {getUserDetails, postUserDetails } from './authQueries.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 

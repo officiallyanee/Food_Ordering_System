@@ -25,4 +25,10 @@ loginRouter.post('/register', (req, res) => {
     register(req, res);
 })
 
+loginRouter.post('/logout', (req, res) => {
+    res.clearCookie('token');
+    res.redirect('/login');
+});
+
+
 export default loginRouter

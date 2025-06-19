@@ -12,7 +12,7 @@
 
 <body class="p-3 m-0 border-0 bd-example m-0 border-0">
     <%- include ('partials/navbar') -%>
-        <nav class="navbar navbar-light bg-dark-subtle mt-5 fixed-top p-2 z-0">
+        <nav class="navbar navbar-light bg-dark-subtle mt-5 fixed-top p-2 z-1">
             <form method="GET" action="/admin" class="d-flex mb-3">
                 <input type="text" name="search" class="form-control me-2" placeholder="Search by customer name..."
                     value="<%= search || '' %>">
@@ -46,27 +46,39 @@
         <div id="orders row" class="row mt-5 pt-5">
             <% if (orders.length===0) { %>
                 <div class="alert alert-warning mt-4">No orders found.</div>
-                <% } else { %>
-                    <%- orders.map((order)=> `
-                        <div class="col-sm-3 mt-3">
-                            <div id="order${order.order_id}" class="card h-100">
-                                <div class=" card-body">
-                                    <h5 class="card-title">Order</h5>
-                                    <div class="card-text">Made by : ${order.name}</div>
-                                    <div class="card-text">At table no : ${order.table_no}</div>
-                                    <div class="card-text">Order Time : ${order.ordered_time}</div>
-                                    <div class="card-text">Received Time : ${order.received_time}</div>
-                                </div>
-                                <ul id="${order.order_id} items" class="list-group list-group-flush"></ul>
-                                <div class="card-body">
-                                    <div class="card-text">Total Fare : Rs.${order.total_fare}</div>
-                                    <button id="${order.order_id} payment" value="${order.order_id}">Payment
-                                        received</button>
-                                </div>
+            <% } else { %>
+                <% orders.forEach((order) => {  %>
+                    <div class="col-sm-3 mt-3">
+                        <div id="order<%= order.order_id %>" class="card h-100">
+                            <div class=" card-body">
+                                <h5 class="card-title">Order</h5>
+                                <div class="card-text">Made by : <%= order.name %></div>
+                                <div class="card-text">At table no : <%= order.table_no %></div>
+                                <div class="card-text">Order Time : <%= order.ordered_time %></div>
+                                <% if(order.received_time){ %>
+                                    <div class="card-text">Received Time : <%= order.received_time %></div>
+                                <% } else{ %>
+                                    <div class="card-text">Received Time : Not received yet</div>
+                                <% } %>
+                                <% if(order.specifications){ %>
+                                    <div class="card-text">Specifications : <%= order.specifications %></div>
+                                <% } else{ %>
+                                    <div class="card-text">Specifications : No specifications provided</div>
+                                <% } %>
+                            </div>
+                            <ul id="<%= order.order_id %> items" class="list-group list-group-flush"></ul>
+                            <div class="card-body">
+                                <div class="card-text">Total Fare : Rs. <%= order.total_fare %></div>
+                                <% if(order.payment_status==='pending'){ %>
+                                    <button id="<%= order.order_id %> payment" value="<%= order.order_id %>">Payment received</button>
+                                <% } else{ %>
+                                    <div class="card-text text-success fw-bold">Paid</div>
+                                <% } %>
                             </div>
                         </div>
-                        `).join('') -%>
-                        <% } %>
+                    </div>
+                <% }) %>
+            <% } %>
         </div>
         <script>
             const orders = JSON.parse(`<%- JSON.stringify(orders) %>`);
@@ -78,22 +90,24 @@
                     });
                     document.getElementById(`${order.order_id} items`).innerHTML = subOrderHTML;
                     let paymentButton = document.getElementById(`${order.order_id} payment`);
-                    paymentButton.addEventListener("click", async () => {
-                        await fetch(`/admin/payment`,
-                            {
-                                method: 'PATCH',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({ orderID: paymentButton.value })
-                            }).then(response => response.json())
-                            .then(data => {
-                                location.assign(data.redirectTo);
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                            });
-                    });
+                    if(paymentButton) {
+                        paymentButton.addEventListener("click", async () => {
+                            await fetch(`/admin/payment`,
+                                {
+                                    method: 'PATCH',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ orderID: paymentButton.value })
+                                }).then(response => response.json())
+                                .then(data => {
+                                    location.assign(data.redirectTo);
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                });
+                        });
+                    }
                 })
             }
             writeItems();

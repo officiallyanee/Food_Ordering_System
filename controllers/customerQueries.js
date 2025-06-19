@@ -59,7 +59,7 @@ export async function createSubOrder(subOrder){
 }
 
 export async function getOrders(user_id){
-    const sql = "SELECT * FROM orders WHERE payment_status = 'pending' AND customer_id = ?";
+    const sql = "SELECT * FROM orders WHERE customer_id = ? ORDER BY payment_status = 'pending' DESC";
     const [orders] = await db.query(sql, [user_id]);
     for(const order of orders){
         const sql = `SELECT sub_orders.item_id, sub_orders.quantity, item_list.name 

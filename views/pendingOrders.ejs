@@ -13,7 +13,7 @@
     <div id="orders" class="row mt-4 p-2 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
      <% if (orders.length === 0) { %>
         <div class="alert alert-warning ">You can see pending orders here.<br> All fininshed for now!<br>Refresh to keep checking.</div>
-        <% } else { %>
+    <% } else { %>
     <%- orders.map((order) => `
     <div id="order${order.order_id}" class="col mb-3">
         <div class="card h-100">
@@ -21,7 +21,7 @@
                 <h5 class="card-title">Order</h5>
                 <div class="card-text">Table No : ${order.table_no}</div>
                 <div class="card-text">Order Time : ${order.ordered_time}</div>
-                <div class="card-text">Specifications : ${order.specifications}</div>
+                <div class="card-text">Specifications : ${ order.specifications ? order.specifications : 'No specifications provided' }</div>
             </div>   
             <ul id="${order.order_id} items" class="list-group list-group-flush"></ul>
         </div>
@@ -31,11 +31,18 @@
     </div>
      <script>
         const orders = JSON.parse(`<%- JSON.stringify(orders) %>`);
+        const hadOrdersInitially = orders.length > 0;
+
         function checkAndRemoveOrder(order) {
             const allAssigned = order.subOrders.every(subOrder => subOrder.chef_id);
             if (allAssigned) {
                 const orderCard = document.getElementById(`order${order.order_id}`);
                 if (orderCard) orderCard.remove();
+                const remainingCards = document.querySelectorAll('#orders div');
+                if(remainingCards.length===0){
+                    const innerHTML=` <div class="alert alert-warning w-100">You can see pending orders here.<br> All fininshed for now!<br>Refresh to keep checking.</div>`
+                    document.getElementById('orders').innerHTML= innerHTML;
+                }
             }
         }
         function writeItems(){    
@@ -85,9 +92,11 @@
         }
         
         writeItems();
-        orders.forEach((order) => {
-            checkAndRemoveOrder(order);
-        })
+            if(orders.length>0){
+            orders.forEach((order) => {
+                checkAndRemoveOrder(order);
+            })
+        }
     </script>
 </body>
 </html>
