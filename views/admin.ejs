@@ -70,7 +70,7 @@
                             <div class="card-body">
                                 <div class="card-text">Total Fare : Rs. <%= order.total_fare %></div>
                                 <% if(order.payment_status==='pending'){ %>
-                                    <button id="<%= order.order_id %> payment" value="<%= order.order_id %>">Payment received</button>
+                                    <button class="btn btn-primary" id="<%= order.order_id %> payment" value="<%= order.order_id %>">Payment received</button>
                                 <% } else{ %>
                                     <div class="card-text text-success fw-bold">Paid</div>
                                 <% } %>

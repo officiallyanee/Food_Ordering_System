@@ -28,7 +28,7 @@
         <div class="row m-2 p-2 m-lg-5 p-lg-4 mt-5 pt-5 mt-lg-5 pt-lg-5">
             <%- items.map((item)=> `
                 <div class="col-12 col-sm-4 mb-3">
-                    <div class="card mx-auto">
+                    <div class="card mx-auto h-100 ">
                         <div class="card_image">
                             <img src="${item.image_url}" alt="Image of ${item.name}" class="card-img-top ">
                             <span class="card_price"><span>₹</span>${item.price_per_item}</span>
@@ -55,8 +55,7 @@
                                     ${item.description}
                                 </p>
                             </div>
-                            <div>
-                                <button id="${item.name}" value="${item.item_id}">Add to list</button>
+                            <div id="${item.item_id}-button-container">
                             </div>
                         </div>
                     </div>
@@ -73,122 +72,109 @@
                     itemList.forEach((qty, id) => {
                         if(itemsOnPage.find((item) => item.item_id == id) === undefined) return;
                         document.getElementById(id + " qty").innerHTML = qty;
+                        updateButton(id);
                     })
                 }
             }
             listItemQty();
+
             categorySelect.addEventListener("change", async (event) => {
                 let category = event.target.value;
-                console.log(category);
                 await fetch(`/menu/${category}`)
                     .then(response => response.json())
                     .then(data => {
                         let itemsContainer = document.getElementsByClassName("row")[0];
                         itemsOnPage = data.items;
                         itemsContainer.innerHTML = data.items.map((item) => `
-                <div class="col-12 col-sm-4 mb-3">
-                <div class="card mx-auto">
-                    <div class="card_image">
-                    <img src="${item.image_url}" alt="Image of ${item.name}" class="card-img-top ">
-                    <span class="card_price"><span>₹</span>${item.price_per_item}</span>
-                    </div>
-                    <div class="card_content card-body">
-                    <h2 class="card-title">${item.name}</h2>
-                    <div class="card-text">
-                        <div class="card_details">
-                            <div>
-                                Availablity: 
-                                <span>
-                                    ${item.availablity === 1 ? 'Available' : 'Not Available'}
-                                 </span>
+                        <div class="col-12 col-sm-4 mb-3">
+                        <div class="card mx-auto h-100 ">
+                            <div class="card_image">
+                            <img src="${item.image_url}" alt="Image of ${item.name}" class="card-img-top ">
+                            <span class="card_price"><span>₹</span>${item.price_per_item}</span>
                             </div>
-                            <div>
-                                <button id="${item.name} add" value="${item.item_id}"> + </button>
-                                <div> QTY : </div><div id="${item.item_id} qty">0</div>
-                                <button id="${item.name} sub" value="${item.item_id}"> - </button> 
+                            <div class="card_content card-body">
+                            <h2 class="card-title">${item.name}</h2>
+                            <div class="card-text">
+                                <div class="card_details">
+                                    <div>
+                                        Availablity: 
+                                        <span>
+                                            ${item.availablity === 1 ? 'Available' : 'Not Available'}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <button id="${item.name} add" value="${item.item_id}"> + </button>
+                                        <div> QTY : </div><div id="${item.item_id} qty">0</div>
+                                        <button id="${item.name} sub" value="${item.item_id}"> - </button> 
+                                    </div>
+                                </div>
+                                <hr/>
+                                <p>
+                                    ${item.description}
+                                </p>
+                            </div>
+                            <div id="${item.item_id}-button-container">
+                            </div>
                             </div>
                         </div>
-                        <hr/>
-                        <p>
-                            ${item.description}
-                        </p>
-                    </div>
-                    <div>
-                        <button id="${item.name}" value="${item.item_id}">Add to list</button>
-                    </div>
-                </div>
-                </div>
-                </div>
-            `).join('');
+                        </div>
+                        `).join('');
                         listItemQty();
                         createList(data.items);
                     });
             });
 
             var itemsArray = JSON.parse(`<%- JSON.stringify(items) %>`);
+
+            function updateButton(itemId) {               
+                const qtyDisplay = document.getElementById(itemId + " qty");
+                const buttonContainer = document.getElementById(`${itemId}-button-container`);
+                const qty = parseInt(qtyDisplay.innerHTML);
+                buttonContainer.innerHTML = '';
+                if (qty > 0) {
+                    const button = document.createElement('button');
+                    button.className = 'btn btn-warning mt-2';
+                    button.textContent = 'Remove from list';
+                    button.addEventListener('click', () => {
+                        itemList.delete(itemId);
+                        qtyDisplay.innerHTML = '0';
+                        buttonContainer.innerHTML = '';
+                    });
+                    buttonContainer.appendChild(button);
+                    itemList.set(itemId, qty);
+                } else {
+                    itemList.delete(itemId);
+                    buttonContainer.innerHTML = '';
+                }
+            };
+
             function createList(items) {
                 items.forEach(item => {
-                    let buttonList = document.getElementById(item.name);
-                    let buttonQtyAdd = document.getElementById(item.name + " add");
-                    let buttonQtySub = document.getElementById(item.name + " sub");
-                    if (itemList.has(buttonList.value)) {
-                        buttonList.innerHTML = "Remove from list";
+                    const itemId = item.item_id;
+                    const buttonQtyAdd = document.getElementById(item.name + " add");
+                    const buttonQtySub = document.getElementById(item.name + " sub");
+                    const qtyDisplay = document.getElementById(itemId + " qty");
+                    if (itemList.has(itemId)) {
+                        qtyDisplay.innerHTML = itemList.get(itemId);
+                        updateButton(itemId);
                     }
-                    else {
-                        buttonList.innerHTML = "Add to list";
-                    }
-                    buttonList.addEventListener("click", () => {
-                        let itemId = buttonList.value;
-                        let itemQty = document.getElementById(itemId + " qty").innerHTML;
-                        if(itemQty>0){        
-                            if (itemList.has(itemId)) {
-                                buttonList.innerHTML = "Add to list";
-                                itemList.delete(itemId);
-                            }
-                            else {
-                                if (itemQty !== 0) {
-                                    buttonList.innerHTML = "Remove from list";
-                                    itemList.set(itemId, itemQty);
-                                }
-                                else {
-                                    alert("Quantity must be greater than 0");
-                                }
-                            }
-                        }
-                        else{
-                            const alert= document.getElementById("alert");
-                            alert.classList.remove("d-none");
-                            alert.innerHTML="You need to add your desired qty with your item"
-                        }
-                    })
+
                     buttonQtyAdd.addEventListener("click", () => {
-                        let itemId = buttonQtyAdd.value;
-                        let itemQty = document.getElementById(itemId + " qty").innerHTML;
-                        itemQty++;
-                        document.getElementById(itemId + " qty").innerHTML = itemQty;
-                        if (itemList.has(itemId)) {
-                            itemList.set(itemId, itemQty);
-                        }
-                    })
+                        let qty = parseInt(qtyDisplay.innerHTML);
+                        qtyDisplay.innerHTML = ++qty;
+                        updateButton(itemId);
+                    });
+
                     buttonQtySub.addEventListener("click", () => {
-                        let itemId = buttonQtySub.value;
-                        let itemQty = document.getElementById(itemId + " qty").innerHTML;
-                        if (itemQty > 0) {
-                            itemQty--;
-                            document.getElementById(itemId + " qty").innerHTML = itemQty;
-                            if (itemList.has(itemId)) {
-                                if (itemQty === 0) {
-                                    itemList.delete(itemId);
-                                    document.getElementById(item.name).innerHTML = "Add to list";
-                                }
-                                else {
-                                    itemList.set(itemId, itemQty);
-                                }
-                            }
+                        let qty = parseInt(qtyDisplay.innerHTML);
+                        if (qty > 0) {
+                            qtyDisplay.innerHTML = --qty;
+                            updateButton(itemId);
                         }
-                    })
-                })
+                    });
+                });
             }
+
             function mapToJson(map) {
                 const jsonObj = {};
                 for (const [key, value] of map) {
@@ -200,7 +186,10 @@
                 }
                 return JSON.stringify(jsonObj);
             }
+
             createList(itemsArray);
+
+
             let itemLink = document.getElementById("item-list");
             itemLink.addEventListener("click", () => {
                 const itemListObj = mapToJson(itemList);
